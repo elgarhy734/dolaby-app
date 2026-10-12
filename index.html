@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دولابي</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#241C16">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دولابي">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,380;0,9..144,560;1,9..144,480&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241C16;
+    --ink-soft:#5B4A3B;
+    --ink-faint:#8A7A69;
+    --paper:#F1EADC;
+    --paper-deep:#E6D9C2;
+    --card:#FFFDF8;
+    --rose:#9C4A44;
+    --rose-deep:#7A3530;
+    --olive:#707A54;
+    --gold:#B8873F;
+    --line:rgba(36,28,22,0.14);
+    --shadow:0 1px 2px rgba(36,28,22,0.06), 0 6px 18px -8px rgba(36,28,22,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,74,68,0.05), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(112,122,84,0.05), transparent 45%);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    min-height:100vh;
+    padding-bottom:50px;
+  }
+
+  .brand-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 18px 0;
+    max-width:640px;
+    margin:0 auto;
+  }
+  .brand-mark{
+    display:flex;align-items:center;gap:8px;
+    font-family:'Fraunces', serif;
+    font-weight:560;
+    font-size:15px;
+    color:var(--ink-soft);
+    letter-spacing:0.3px;
+  }
+  .brand-mark svg{flex:none;}
+  .piece-count{
+    font-size:12px;
+    color:var(--ink-faint);
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:4px 11px;
+    border-radius:999px;
+  }
+
+  header{
+    padding:14px 20px 22px;
+    text-align:center;
+    animation:riseIn .5s cubic-bezier(.2,.7,.3,1) both;
+  }
+  @keyframes riseIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+  header h1{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:480;
+    font-size:clamp(34px, 9vw, 46px);
+    margin:0 0 8px;
+    letter-spacing:0.2px;
+    color:var(--ink);
+  }
+  header p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:14.5px;
+  }
+
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px;}
+
+  .top-actions{
+    display:flex;
+    justify-content:center;
+    margin:4px 0 30px;
+  }
+  .btn-add{
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:999px;
+    padding:13px 28px;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    box-shadow:var(--shadow);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-add:hover{transform:translateY(-1px);}
+  .btn-add:active{transform:translateY(1px);}
+  .btn-add:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{
+    outline:2px solid var(--rose);
+    outline-offset:2px;
+  }
+
+  .outfit-board{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px 20px 24px;
+    margin-bottom:34px;
+    box-shadow:var(--shadow);
+    position:relative;
+  }
+  .outfit-board::before{
+    content:'';
+    position:absolute;
+    inset:8px;
+    border:1px dashed var(--paper-deep);
+    border-radius:9px;
+    pointer-events:none;
+  }
+  .board-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    position:relative;
+    z-index:1;
+  }
+  .board-head h2{
+    font-family:'Fraunces', serif;
+    font-weight:560;
+    font-size:20px;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .board-head h2 span{
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    font-weight:400;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    letter-spacing:0.3px;
+  }
+  .shuffle-btn{
+    background:var(--ink);
+    border:none;
+    border-radius:999px;
+    padding:9px 16px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    cursor:pointer;
+    color:var(--paper);
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    transition:transform .15s ease;
+  }
+  .shuffle-btn:hover{transform:translateY(-1px);}
+  .shuffle-btn.spin svg{animation:spin .5s ease;}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(200deg)}}
+
+  .look-row{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    position:relative;
+    z-index:1;
+  }
+  .look-slot{
+    flex:1;
+    max-width:148px;
+    aspect-ratio:3/4;
+    border-radius:9px;
+    overflow:hidden;
+    background:var(--paper-deep);
+    border:1px solid var(--line);
+    position:relative;
+    box-shadow:0 4px 10px -6px rgba(36,28,22,0.3);
+  }
+  .look-slot img{width:100%;height:100%;object-fit:cover;display:block;}
+  .look-slot .tag{
+    position:absolute;bottom:0;right:0;left:0;
+    background:linear-gradient(to top, rgba(36,28,22,0.78), transparent);
+    color:#FBF8F2;
+    font-size:11px;
+    padding:14px 6px 7px;
+    text-align:center;
+  }
+  .empty-look{
+    color:var(--ink-faint);
+    font-size:13.5px;
+    text-align:center;
+    padding:26px 14px;
+    line-height:1.9;
+    position:relative;
+    z-index:1;
+  }
+
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin:28px 0 13px;
+  }
+  .section-head svg{flex:none;color:var(--ink-soft);}
+  .section-head h3{
+    font-family:'Fraunces', serif;
+    font-weight:560;
+    font-size:18px;
+    margin:0;
+  }
+  .section-head .count{
+    font-size:11.5px;
+    color:var(--ink-faint);
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:2px 9px;
+    border-radius:999px;
+    margin-inline-start:2px;
+  }
+
+  .empty-state{
+    text-align:center;
+    color:var(--ink-soft);
+    padding:56px 24px;
+    font-size:15px;
+    line-height:2;
+  }
+  .empty-state svg{margin-bottom:10px;opacity:0.7;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(112px,1fr));
+    gap:12px;
+  }
+  .item-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:var(--shadow);
+    transition:transform .15s ease;
+  }
+  .item-card:hover{transform:translateY(-2px);}
+  .item-card img{
+    width:100%;
+    aspect-ratio:1/1.15;
+    object-fit:cover;
+    display:block;
+    background:var(--paper-deep);
+  }
+  .item-label{
+    padding:8px 9px 10px;
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .del-btn{
+    position:absolute;
+    top:7px;left:7px;
+    width:25px;height:25px;
+    border-radius:50%;
+    background:rgba(36,28,22,0.68);
+    color:#fff;
+    border:none;
+    font-size:14px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;
+  }
+  .del-btn:hover{background:var(--rose-deep);}
+
+  /* modal */
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(36,28,22,0.45);
+    display:flex;align-items:flex-end;justify-content:center;
+    z-index:50;
+    opacity:0;pointer-events:none;
+    transition:opacity .2s;
+  }
+  .overlay.show{opacity:1;pointer-events:auto;}
+  .sheet{
+    background:var(--card);
+    width:100%;max-width:480px;
+    border-radius:18px 18px 0 0;
+    padding:10px 22px 28px;
+    transform:translateY(24px);
+    transition:transform .25s cubic-bezier(.2,.7,.3,1);
+    max-height:88vh;
+    overflow-y:auto;
+  }
+  .overlay.show .sheet{transform:translateY(0);}
+  .drag-handle{
+    width:38px;height:4px;
+    background:var(--paper-deep);
+    border-radius:999px;
+    margin:0 auto 16px;
+  }
+  .sheet h3{
+    font-family:'Fraunces', serif;
+    font-weight:560;
+    font-size:21px;
+    margin:0 0 18px;
+  }
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+    font-weight:500;
+  }
+  .field input[type=text]{
+    width:100%;
+    padding:11px 13px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--ink);
+  }
+  .cat-toggle{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .cat-opt{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:10px 10px;
+    cursor:pointer;
+    font-size:13px;
+    color:var(--ink-soft);
+    transition:border-color .15s, background .15s;
+  }
+  .cat-opt svg{flex:none;}
+  .cat-opt.active{
+    border-color:var(--ink);
+    background:var(--paper);
+    color:var(--ink);
+    font-weight:600;
+  }
+  .cat-opt input{display:none;}
+
+  .photo-drop{
+    border:1.5px dashed var(--ink-faint);
+    border-radius:10px;
+    padding:18px;
+    text-align:center;
+    cursor:pointer;
+    color:var(--ink-faint);
+    font-size:13.5px;
+    position:relative;
+    overflow:hidden;
+    min-height:76px;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .15s, background .15s;
+  }
+  .photo-drop:hover{border-color:var(--rose); background:var(--paper);}
+  .photo-drop img{
+    max-height:160px;border-radius:8px;
+  }
+  .photo-drop input{
+    position:absolute;inset:0;opacity:0;cursor:pointer;
+  }
+  .color-readout{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .color-dot{
+    width:16px;height:16px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    flex:none;
+  }
+  .sheet-actions{
+    display:flex;gap:10px;margin-top:20px;
+  }
+  .sheet-actions button{
+    flex:1;
+    padding:13px;
+    border-radius:9px;
+    border:none;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .12s ease, opacity .15s;
+  }
+  .btn-cancel{background:var(--paper-deep);color:var(--ink);}
+  .btn-cancel:hover{transform:translateY(-1px);}
+  .btn-save{background:var(--ink);color:var(--paper);}
+  .btn-save:disabled{opacity:0.45;cursor:not-allowed;}
+  .btn-save:not(:disabled):hover{transform:translateY(-1px);}
+
+  .about-btn{
+    width:26px;height:26px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--ink-soft);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s, color .15s;
+  }
+  .about-btn:hover{background:var(--ink);color:var(--paper);}
+
+  .about-sheet{
+    text-align:center;
+    padding-top:6px;
+  }
+  .about-avatar{
+    width:56px;height:56px;
+    border-radius:50%;
+    background:var(--ink);
+    color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:22px;
+    margin:0 auto 14px;
+  }
+  .about-sheet h3{margin-bottom:6px;}
+  .about-sheet .role{
+    font-size:12.5px;
+    color:var(--ink-faint);
+    margin-bottom:16px;
+    letter-spacing:0.2px;
+  }
+  .about-sheet .bio{
+    font-size:14px;
+    color:var(--ink-soft);
+    line-height:1.9;
+    max-width:340px;
+    margin:0 auto 22px;
+  }
+  .about-close{
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:9px;
+    padding:12px 26px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .whatsapp-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#fff;
+    color:var(--olive);
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    padding:11px 20px;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    text-decoration:none;
+    margin-bottom:12px;
+    transition:border-color .15s, transform .15s;
+  }
+  .whatsapp-link:hover{border-color:var(--olive); transform:translateY(-1px);}
+  .about-actions{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+  }
+
+  .toast{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--paper);
+    padding:11px 12px 11px 20px;border-radius:999px;font-size:13.5px;
+    opacity:0;pointer-events:none;transition:opacity .25s, bottom .25s;
+    z-index:60;
+    display:flex;align-items:center;gap:12px;
+  }
+  .toast.show{opacity:1;bottom:28px;pointer-events:auto;}
+  .toast button{
+    background:rgba(241,234,220,0.16);
+    border:none;
+    color:var(--paper);
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-bar">
+  <div class="brand-mark">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 5-7 5-7-5 7-5z"/><path d="M5 12v6l7 4 7-4v-6"/></svg>
+    أطلس هدومك
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="piece-count" id="pieceCount">٠ قطعة</div>
+    <button class="about-btn" id="openAbout" aria-label="عن المصمم">i</button>
+  </div>
+</div>
+
+<header>
+  <h1>دولابي</h1>
+  <p>صوّري هدومك، ودعيني أرتّبلك تنسيقة</p>
+</header>
+
+<div class="wrap">
+  <div class="top-actions">
+    <button class="btn-add" id="openAdd">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      إضافة قطعة
+    </button>
+  </div>
+
+  <div class="outfit-board">
+    <div class="board-head">
+      <h2>تنسيقة اليوم<span>مقترحة من دولابك</span></h2>
+      <button class="shuffle-btn" id="shuffleBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        بدّلي
+      </button>
+    </div>
+    <div id="lookRow"><div class="empty-look">لسه معندكيش هدوم كفاية لتنسيقة<br>ضيفي قطع من تحت (أعلى وأسفل وحذاء على الأقل)</div></div>
+  </div>
+
+  <div id="closetArea"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="drag-handle"></div>
+    <h3>قطعة جديدة</h3>
+    <div class="field">
+      <label>صورة القطعة</label>
+      <div class="photo-drop" id="photoDrop">
+        <span id="photoDropText">اضغطي لاختيار صورة</span>
+        <input type="file" accept="image/*" id="photoInput">
+      </div>
+      <div class="color-readout" id="colorReadout" style="display:none;">
+        <span class="color-dot" id="colorDot"></span>
+        <span id="colorLabel"></span>
+      </div>
+    </div>
+    <div class="field">
+      <label>النوع</label>
+      <div class="cat-toggle" id="catToggle">
+        <label class="cat-opt active" data-cat="top">
+          <input type="radio" name="cat" value="top" checked>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4L4 8l3 3 1-1v9h8v-9l1 1 3-3-4-4-3 2h-2z"/></svg>
+          أعلى
+        </label>
+        <label class="cat-opt" data-cat="bottom">
+          <input type="radio" name="cat" value="bottom">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12l1 8-3 10h-3l-1-9-1 9H8L5 11z"/></svg>
+          أسفل
+        </label>
+        <label class="cat-opt" data-cat="shoes">
+          <input type="radio" name="cat" value="shoes">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 18v-4l4-1 3-3h3l2 3 6 1.5V18z"/></svg>
+          حذاء
+        </label>
+        <label class="cat-opt" data-cat="accessory">
+          <input type="radio" name="cat" value="accessory">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M9 11l-3 9h12l-3-9"/></svg>
+          إكسسوار
+        </label>
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn-cancel" id="cancelAdd">إلغاء</button>
+      <button class="btn-save" id="saveItem" disabled>حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="aboutOverlay">
+  <div class="sheet about-sheet">
+    <div class="drag-handle"></div>
+    <div class="about-avatar">ح</div>
+    <h3 style="font-family:'Fraunces', serif; font-weight:560; font-size:20px;">حازم الجارحي</h3>
+    <div class="role">مصمم تطبيق دولابي</div>
+    <p class="bio">تطبيق دولابي من تصميم حازم الجارحي، لمساعدتك تنسّقي هدومك بسهولة.</p>
+    <div class="about-actions">
+      <a class="whatsapp-link" href="https://wa.me/201221085824" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.5 0-10 4.5-10 10 0 1.76.46 3.45 1.34 4.95L2 22l5.2-1.36A9.96 9.96 0 0 0 12.04 22c5.5 0 10-4.5 10-10s-4.5-10-10-10zm0 18.2c-1.6 0-3.16-.43-4.5-1.24l-.32-.19-3.1.81.83-3.02-.21-.31A8.17 8.17 0 0 1 3.84 12c0-4.53 3.68-8.2 8.2-8.2 4.53 0 8.2 3.67 8.2 8.2 0 4.52-3.67 8.2-8.2 8.2zm4.5-6.13c-.25-.12-1.46-.72-1.68-.8-.23-.08-.39-.12-.56.13-.16.24-.63.8-.78.96-.14.16-.28.18-.53.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.22-1.46-1.37-1.7-.14-.25-.02-.38.11-.5.11-.11.25-.28.37-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.16 0-.42.06-.64.3-.22.25-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.13 3.64.58.25 1.03.4 1.38.5.58.19 1.11.16 1.53.1.47-.07 1.46-.6 1.66-1.17.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+        تواصل واتساب
+      </a>
+      <button class="about-close" id="closeAbout">تمام</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script>
+const CATS = {
+  top: {label:'أعلى', icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 4L4 8l3 3 1-1v9h8v-9l1 1 3-3-4-4-3 2h-2z"/></svg>'},
+  bottom: {label:'أسفل', icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h12l1 8-3 10h-3l-1-9-1 9H8L5 11z"/></svg>'},
+  shoes: {label:'حذاء', icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 18v-4l4-1 3-3h3l2 3 6 1.5V18z"/></svg>'},
+  accessory: {label:'إكسسوار', icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M9 11l-3 9h12l-3-9"/></svg>'}
+};
+const STORAGE_KEY = 'wardrobe-items-v1';
+let items = [];
+let pendingPhoto = null;
+let lastDeleted = null;
+let toastTimer = null;
+
+const closetArea = document.getElementById('closetArea');
+const lookRow = document.getElementById('lookRow');
+const overlay = document.getElementById('overlay');
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+const pieceCount = document.getElementById('pieceCount');
+
+function showToast(msg, actionLabel, actionFn){
+  clearTimeout(toastTimer);
+  toastMsg.textContent = msg;
+  const oldBtn = toast.querySelector('button');
+  if(oldBtn) oldBtn.remove();
+  if(actionLabel){
+    const btn = document.createElement('button');
+    btn.textContent = actionLabel;
+    btn.onclick = ()=>{ actionFn(); toast.classList.remove('show'); };
+    toast.appendChild(btn);
+  }
+  toast.classList.add('show');
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), actionLabel ? 4200 : 1900);
+}
+
+async function loadItems(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    items = raw ? JSON.parse(raw) : [];
+  }catch(e){
+    items = [];
+  }
+  render();
+  generateLook(true);
+}
+
+async function saveItems(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  }catch(e){
+    showToast('المساحة اتملت — امسحي قطع قديمة عشان تضيفي جديد');
+  }
+}
+
+function updateCount(){
+  pieceCount.textContent = items.length === 0 ? '٠ قطعة' : (items.length + (items.length===1 ? ' قطعة' : ' قطع'));
+}
+
+function render(){
+  closetArea.innerHTML = '';
+  updateCount();
+  if(items.length === 0){
+    closetArea.innerHTML = `<div class="empty-state">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3l7 5-7 5-7-5 7-5z"/><path d="M5 12v6l7 4 7-4v-6"/></svg><br>
+      دولابك لسه فاضي<br>ابدأي بإضافة أول قطعة من الزرار اللي فوق</div>`;
+    return;
+  }
+  Object.keys(CATS).forEach(catKey=>{
+    const catItems = items.filter(i=>i.cat===catKey);
+    if(catItems.length===0) return;
+
+    const head = document.createElement('div');
+    head.className = 'section-head';
+    head.innerHTML = `${CATS[catKey].icon}<h3>${CATS[catKey].label}</h3><span class="count">${catItems.length}</span>`;
+    closetArea.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+    catItems.forEach(item=>{
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.name||CATS[catKey].label}">
+        <div class="item-label">${item.name || CATS[catKey].label}</div>
+        <button class="del-btn" data-id="${item.id}" aria-label="حذف">×</button>
+      `;
+      grid.appendChild(card);
+    });
+    closetArea.appendChild(grid);
+  });
+
+  closetArea.querySelectorAll('.del-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.getAttribute('data-id');
+      lastDeleted = items.find(i=>i.id===id);
+      items = items.filter(i=>i.id !== id);
+      await saveItems();
+      render();
+      generateLook(true);
+      showToast('اتمسحت القطعة', 'تراجع', async ()=>{
+        if(lastDeleted){
+          items.push(lastDeleted);
+          await saveItems();
+          render();
+          generateLook(true);
+        }
+      });
+    });
+  });
+}
+
+function pickRandom(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function generateLook(silent){
+  const tops = items.filter(i=>i.cat==='top');
+  const bottoms = items.filter(i=>i.cat==='bottom');
+  const shoes = items.filter(i=>i.cat==='shoes');
+  const accessories = items.filter(i=>i.cat==='accessory');
+
+  if(tops.length===0 || bottoms.length===0 || shoes.length===0){
+    lookRow.innerHTML = `<div class="empty-look">لسه معندكيش هدوم كفاية لتنسيقة<br>ضيفي قطع من تحت (أعلى وأسفل وحذاء على الأقل)</div>`;
+    return;
+  }
+
+  const look = {
+    top: pickRandom(tops),
+    bottom: pickRandom(bottoms),
+    shoes: pickRandom(shoes),
+    accessory: accessories.length ? pickRandom(accessories) : null
+  };
+
+  const slots = [look.top, look.bottom, look.shoes];
+  if(look.accessory) slots.push(look.accessory);
+
+  lookRow.innerHTML = '';
+  slots.forEach(item=>{
+    const slot = document.createElement('div');
+    slot.className = 'look-slot';
+    slot.innerHTML = `<img src="${item.img}"><div class="tag">${item.name || CATS[item.cat].label}</div>`;
+    lookRow.appendChild(slot);
+  });
+
+  if(!silent) showToast('تنسيقة جديدة ✨');
+}
+
+document.getElementById('shuffleBtn').addEventListener('click', function(){
+  this.classList.remove('spin');
+  void this.offsetWidth;
+  this.classList.add('spin');
+  generateLook(false);
+});
+
+// modal handling
+const openAdd = document.getElementById('openAdd');
+const cancelAdd = document.getElementById('cancelAdd');
+const photoInput = document.getElementById('photoInput');
+const photoDropText = document.getElementById('photoDropText');
+const photoDrop = document.getElementById('photoDrop');
+const saveBtn = document.getElementById('saveItem');
+const catToggle = document.getElementById('catToggle');
+const colorReadout = document.getElementById('colorReadout');
+const colorDot = document.getElementById('colorDot');
+const colorLabel = document.getElementById('colorLabel');
+let selectedCat = 'top';
+let detectedColorName = '';
+
+const COLOR_PALETTE = [
+  {name:'أبيض', rgb:[250,250,248]},
+  {name:'أسود', rgb:[24,22,20]},
+  {name:'رمادي', rgb:[130,128,124]},
+  {name:'بيج', rgb:[222,203,164]},
+  {name:'بني', rgb:[101,67,33]},
+  {name:'أحمر', rgb:[188,32,32]},
+  {name:'وردي', rgb:[232,142,172]},
+  {name:'برتقالي', rgb:[228,118,30]},
+  {name:'أصفر', rgb:[230,198,40]},
+  {name:'أخضر', rgb:[62,140,62]},
+  {name:'تركواز', rgb:[38,168,168]},
+  {name:'أزرق', rgb:[42,92,190]},
+  {name:'كحلي', rgb:[22,32,82]},
+  {name:'بنفسجي', rgb:[132,72,172]}
+];
+
+function nearestColorName(r,g,b){
+  let best = COLOR_PALETTE[0].name, bestDist = Infinity;
+  COLOR_PALETTE.forEach(c=>{
+    const d = (r-c.rgb[0])**2 + (g-c.rgb[1])**2 + (b-c.rgb[2])**2;
+    if(d < bestDist){ bestDist = d; best = c.name; }
+  });
+  return best;
+}
+
+function detectColor(canvas){
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const x0 = Math.floor(w*0.25), x1 = Math.floor(w*0.75);
+  const y0 = Math.floor(h*0.2), y1 = Math.floor(h*0.8);
+  const cw = Math.max(1, x1-x0), ch = Math.max(1, y1-y0);
+  const data = ctx.getImageData(x0, y0, cw, ch).data;
+  let r=0, g=0, b=0, count=0;
+  for(let i=0; i<data.length; i+=16){
+    r += data[i]; g += data[i+1]; b += data[i+2]; count++;
+  }
+  r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
+  return { name: nearestColorName(r,g,b), rgb: `rgb(${r},${g},${b})` };
+}
+
+catToggle.querySelectorAll('.cat-opt').forEach(opt=>{
+  opt.addEventListener('click', ()=>{
+    catToggle.querySelectorAll('.cat-opt').forEach(o=>o.classList.remove('active'));
+    opt.classList.add('active');
+    selectedCat = opt.getAttribute('data-cat');
+  });
+});
+
+function openModal(){
+  overlay.classList.add('show');
+}
+function closeModal(){
+  overlay.classList.remove('show');
+  pendingPhoto = null;
+  photoInput.value = '';
+  photoDropText.style.display = 'block';
+  photoDropText.textContent = 'اضغطي لاختيار صورة';
+  const existingImg = photoDrop.querySelector('img');
+  if(existingImg) existingImg.remove();
+  colorReadout.style.display = 'none';
+  detectedColorName = '';
+  catToggle.querySelectorAll('.cat-opt').forEach(o=>o.classList.remove('active'));
+  catToggle.querySelector('[data-cat="top"]').classList.add('active');
+  selectedCat = 'top';
+  saveBtn.disabled = true;
+}
+
+const aboutOverlay = document.getElementById('aboutOverlay');
+document.getElementById('openAbout').addEventListener('click', ()=>aboutOverlay.classList.add('show'));
+document.getElementById('closeAbout').addEventListener('click', ()=>aboutOverlay.classList.remove('show'));
+aboutOverlay.addEventListener('click', (e)=>{ if(e.target === aboutOverlay) aboutOverlay.classList.remove('show'); });
+
+openAdd.addEventListener('click', openModal);
+cancelAdd.addEventListener('click', closeModal);
+overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+
+photoInput.addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      const maxDim = 480;
+      let w = img.width, h = img.height;
+      if(w > h && w > maxDim){ h = h*(maxDim/w); w = maxDim; }
+      else if(h > maxDim){ w = w*(maxDim/h); h = maxDim; }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      pendingPhoto = canvas.toDataURL('image/jpeg', 0.72);
+
+      const detected = detectColor(canvas);
+      detectedColorName = detected.name;
+      colorDot.style.background = detected.rgb;
+      colorLabel.textContent = 'اللون المكتشف: ' + detected.name;
+      colorReadout.style.display = 'flex';
+
+      photoDropText.style.display = 'none';
+      let imgEl = photoDrop.querySelector('img');
+      if(!imgEl){
+        imgEl = document.createElement('img');
+        photoDrop.appendChild(imgEl);
+      }
+      imgEl.src = pendingPhoto;
+      saveBtn.disabled = false;
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+saveBtn.addEventListener('click', async ()=>{
+  if(!pendingPhoto) return;
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'بتتحفظ...';
+  const newItem = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+    cat: selectedCat,
+    name: detectedColorName,
+    img: pendingPhoto
+  };
+  items.push(newItem);
+  await saveItems();
+  render();
+  generateLook(true);
+  saveBtn.textContent = 'حفظ';
+  closeModal();
+  showToast('اتضافت القطعة لدولابك');
+});
+
+loadItems();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+</script>
+
+</body>
+</html>
